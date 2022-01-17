@@ -9,6 +9,14 @@ Array.prototype.add = function(...args) {
 	})
 }
 
+const getCurrentTime = () => {
+	let timeZone = "America/Denver"
+	const dateObject = new Date().toLocaleString("en-US", {
+		timeZone,
+	})
+	return dateObject
+}
+
 var http = require('http')
 var express = require('express')
 var app = express()
@@ -49,16 +57,16 @@ io.on("connection", (socket) => {
 	socket.emit("meta", { "messages": messages })
 
 	io.sockets.emit("announcement", { message: `${socket.username} has joined`, date: new Date().toLocaleString() })
-	messages.add({ message: `${socket.username} has joined`, date: new Date().toLocaleString(), type: "ANNOUNCMENT" })
+	messages.add({ message: `${socket.username} has joined`, date: getCurrentTime(), type: "ANNOUNCMENT" })
 
 	socket.on("message", (data) => {
 		io.sockets.emit("message", { username: socket.username, message: data, date: new Date().toLocaleString() })
-		messages.add({username: socket.username, message: data, date: new Date().toLocaleString(), type: "MESSAGE"})
+		messages.add({username: socket.username, message: data, date: getCurrentTime(), type: "MESSAGE"})
 	})
 
 	socket.on("image", (data) => {
 		io.sockets.emit("image", { username: socket.username, image: data, date: new Date().toLocaleString() })
-		messages.add({username: socket.username, image: data, date: new Date().toLocaleString(), type: "IMAGE"})
+		messages.add({username: socket.username, image: data, date: getCurrentTime, type: "IMAGE"})
 	})
 
 	socket.on("disconnect", (data) => {
@@ -72,7 +80,7 @@ io.on("connection", (socket) => {
 		}
 		io.sockets.emit("meta", { "connected": sockets })
 		io.sockets.emit("announcement", { message: `${socket.username} has disconnected`, date: new Date().toLocaleString() })
-		messages.add({ message: `${socket.username} has disconnected`, date: new Date().toLocaleString(), type: "ANNOUNCMENT" })
+		messages.add({ message: `${socket.username} has disconnected`, date: getCurrentTime(), type: "ANNOUNCMENT" })
 		fs.writeFileSync(filename, JSON.stringify(content, null, 2))
 		delete require.cache[require.resolve(filename)]
 		content = require(filename)
