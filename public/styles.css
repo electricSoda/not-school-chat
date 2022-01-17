@@ -2,6 +2,8 @@ body {
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
+	height: 100%;
+	width: 100%;
 	font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
@@ -18,7 +20,7 @@ body {
 
 #messages-container {
 	width: 85%;
-	height: 90vh;
+	height: 85vh;
 	overflow: auto;
 }
 
@@ -32,6 +34,7 @@ body {
 	font-size: 15px;
 	padding-left: 15px;
 	padding-top: 5px;
+	padding-bottom: 5px;
 }
 
 .message:nth-child(odd) {
@@ -47,6 +50,7 @@ body {
 	width: 85%;
 	border-top: 2px solid black;
 	padding-top: 15px;
+	height: 15%;
 }
 
 input[type=text] {
@@ -61,10 +65,13 @@ input[type=text] {
 
 input[type=submit] {
 	background-color: white;
+	color: black;
 	border-radius: 10px;
 	padding: 0px 10px 0px 10px;
 	border: 3px solid black;
 	font-size: 3vh;
+	-webkit-appearance: none;
+	opacity: 1;
 }
 
 input[type=submit]:hover {
@@ -107,4 +114,12 @@ input[type=submit]:hover {
 	background: -moz-linear-gradient(right, orange, yellow, green, cyan, blue, violet); /* For Firefox 3.6 to 15 */
 	background: linear-gradient(right, orange , yellow, green, cyan, blue, violet); /* Standard syntax (must be last) */
 	border: 2px solid black;
+}
+
+b {
+	font-weight: 700
+}
+
+b::after {
+	content: ":"
 }
