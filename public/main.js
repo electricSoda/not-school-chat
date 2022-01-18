@@ -76,7 +76,7 @@ const listeners = () => {
 				} else if (message.type == "ANNOUNCMENT") {
 					messages.innerHTML += `<li class="message"><i>${message.message}</i> <a class="date"><${message.date}></a></li>`
 				} else if(message.type == "IMAGE") {
-					messages.innerHTML += `<li class="message"><b>${message.username}</b> <a class="date"><${message.date}></a><br><img src="${message.image}" style="width: 200px; height: 200px;"></li>`
+					messages.innerHTML += `<li class="message"><b>${message.username}</b> <a class="date"><${message.date}></a><br><a href="${message.image}" target="_blank" rel="noopener noreferrer"><img src="${message.image}" style="width: 300px; height: 300px;"></a></li>`
 				}
 				messages.lastElementChild.scrollIntoView()	
 			})
@@ -94,7 +94,7 @@ const listeners = () => {
 	})
 
 	socket.on('image', (data) => {
-		messages.innerHTML += `<li class="message"><b>${data.username}</b> <a class="date"><${data.date}></a><br><img src="${data.image}" style="width: 200px; height: 200px;"></li>`
+		messages.innerHTML += `<li class="message"><b>${data.username}</b> <a class="date"><${data.date}></a><br><a href="${data.image}" target="_blank" rel="noopener noreferrer"><img src="${data.image}" style="width: 300px; height: 300px;"></a></li>`
 		messages.lastElementChild.scrollIntoView(true)	
 	})
 	

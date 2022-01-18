@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>? You good bro</title>
+	<style>
+		.torso {
+			height: 100px;
+			width: 100px;
+			border-radius: 100%;
+			background-color: aqua;
+			padding: 20px;
+			margin: 0 auto;
+			animation: bounce 2s infinite;
+		  }
+		  
+		  p {
+			text-align: center;
+			font-family: Arial, sans-serif;
+			font-size: 20px;
+			margin: 0 auto;
+			margin-top: 35px;
+			animation: flip 2s infinite;
+		  }
+		  
+		  @keyframes bounce {
+			0% {
+			  transform: translateY(0px);
+			}
+			25% {
+			  transform: translateY(50px);
+			}
+			75% {
+			  transform: translateY(50px);
+			}
+			100% {
+			  transform: translateY(0px);
+			}
+		  }
+		  
+		  .shadow {
+			height: 20px;
+			width: 100px;
+			border-radius: 100%;
+			background-color: black;
+			padding: 20px;
+			margin: 0 auto;
+			animation: shadow-stuff 2s infinite;
+		  }
+		  
+		  @keyframes shadow-stuff {
+			0% {
+			  background-color: rgba(0, 0, 0, .3);
+			  height: 10px;
+			  width: 75px;
+			}
+			25% {
+			  background-color: rgba(0, 0, 0, .6);
+			  height: 20px;
+			  width: 100px;
+			}
+			75% {
+			  background-color: rgba(0, 0, 0, .6);
+			  height: 20px;
+			  width: 100px;
+			}
+			100% {
+			  background-color: rgba(0, 0, 0, .3);
+			  height: 10px;
+			  width: 75px;
+			}
+		  }
+		  
+		  @keyframes flip {
+			from {
+			  transform: rotateY(0deg);
+			}
+			to {
+			  transform: rotateY(360deg);
+			}
+		  }
+		  
+		  body {
+			background-color: #BFCFCC;
+			text-align: center;
+		  }
+	</style>
+</head>
+<body>
+	<div class="torso" id="torso2">
+		<p id="lenny">( ͡° ͜ʖ ͡°)</p>
+	</div>
+	<div class="shadow"></div>
+	<a href="https://codepen.io/KevinLambert/pen/KdGxbo">Credit to Kevin Lambert on Codepen</a>
+</body>
+</html>

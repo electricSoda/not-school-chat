@@ -30,10 +30,13 @@ const io = require("socket.io")(server)
 const filename = "./messages.json"
 var content = require(filename)
 var messages = content["messages"]
-const fs = require("fs")
 messages.queuelength = 100
 
+const fs = require("fs")
+const { nanoid } = require("nanoid")
+
 app.use(express.static(__dirname + "/public"))
+app.use("/attachments", express.static(__dirname + "/attachments"))
 
 var typing = []
 
@@ -78,8 +81,17 @@ io.on("connection", (socket) => {
 	})
 
 	socket.on("image", (data) => {
-		io.sockets.emit("image", { username: socket.username, image: data, date: new Date().toLocaleString() })
-		messages.add({username: socket.username, image: data, date: getCurrentTime, type: "IMAGE"})
+		let _data = data.replace(/^data:image\/\w+;base64,/, "");
+		var buf = Buffer.from(_data, 'base64');
+		var path = "/attachments/image-" + nanoid() + ".png"
+		fs.writeFile("." + path, buf, (err) => {
+			if (err) {
+				throw err
+			}
+		})
+
+		io.sockets.emit("image", { username: socket.username, image: path, date: new Date().toLocaleString() })
+		messages.add({username: socket.username, image: path, date: getCurrentTime, type: "IMAGE"})
 	})
 
 	socket.on("disconnect", (data) => {
