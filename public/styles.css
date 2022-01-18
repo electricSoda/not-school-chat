@@ -46,6 +46,10 @@ body {
 	float: right;
 }
 
+#typing {
+	padding-left: 15px;
+}
+
 #chat {
 	width: 85%;
 	border-top: 2px solid black;

@@ -26,6 +26,12 @@ const chat = document.getElementById("chat")
 
 const input = document.getElementById("input")
 
+chat.addEventListener("keyup", () => {
+	if (input.value != "" && input.value != " ") {
+		socket.emit("typing", true)
+	}
+})
+
 chat.addEventListener("submit", (e) => {
 	e.preventDefault()
 	if (input.value != "" && input.value != " ") {
@@ -48,6 +54,8 @@ img.addEventListener("change", () => {
 
 const online_header = document.getElementById("header")
 const online = document.getElementById("online-list")
+
+const typing = document.getElementById("typing")
 
 const listeners = () => {
 	socket.on("meta", (data) => {
@@ -88,5 +96,25 @@ const listeners = () => {
 	socket.on('image', (data) => {
 		messages.innerHTML += `<li class="message"><b>${data.username}</b> <a class="date"><${data.date}></a><br><img src="${data.image}" style="width: 200px; height: 200px;"></li>`
 		messages.lastElementChild.scrollIntoView(true)	
+	})
+	
+	socket.on("typing", (data) => {
+		let _typing = data.typing
+		if (_typing.includes(username)) {
+			let i = _typing.indexOf(username)
+			_typing.splice(i, 1)
+		}
+
+		var typing_string = ""
+		if (_typing.length >= 4) {
+			typing_string = "Several people are typing..."
+		} else if (_typing.length == 1) {
+			typing_string = _typing[0] + " is typing..."
+		} else if (4 > _typing.length && _typing.length > 1) {
+			typing_string = _typing.join(", ") + " are typing..."
+		} else {
+			typing_string = ""
+		}
+		typing.innerText = typing_string
 	})
 }
