@@ -11,7 +11,11 @@ username_field.addEventListener("submit", (e) => {
 		username_container.style.display = "none"
 		username = _username.value
 
-		socket = io(window.location.href, { query: `username=${username}`})
+		socket = io(window.location.href, { 
+			query: `username=${username}`,
+			reconnect: true,
+			transports: ["websocket"],
+		})
 
 		listeners()
 	} else {
@@ -58,6 +62,9 @@ const online = document.getElementById("online-list")
 const typing = document.getElementById("typing")
 
 const listeners = () => {
+	socket.on("connect_error", (err) => {
+		console.log("Connection Error : " + err.message)
+	})
 	socket.on("meta", (data) => {
 		if (data["connected"]) {
 			online.innerHTML = ""
