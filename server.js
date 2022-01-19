@@ -1,3 +1,5 @@
+require("dotenv").config()
+
 // Array functions
 Array.prototype.queuelength = 100
 Array.prototype.add = function(...args) {
@@ -17,11 +19,12 @@ const getCurrentTime = () => {
 	return dateObject
 }
 
-var http = require('http')
-var express = require('express')
-var app = express()
+const http = require('http')
+const express = require('express')
+const app = express()
+const server = http.createServer(app)
+const session = require("express-session")
 
-var server = http.createServer(app)
 
 const PORT = process.env.PORT || 3000
 
@@ -33,10 +36,49 @@ var messages = content["messages"]
 messages.queuelength = 100
 
 const fs = require("fs")
+const path = require("path")
 const { nanoid } = require("nanoid")
+const bodyParser = require("body-parser")
+const cookieParser = require("cookie-parser")
 
-app.use(express.static(__dirname + "/public"))
+const verify = (req, res, next) => {
+	if (!req.session) {
+		res.send("You are not admitted to the homework discussion group.")
+	} else if (req.session.packets == process.env.PACKETS)  {
+		next()
+	} else {
+		res.send("You are not admitted to the homework discussion group.")
+	}
+}
+
+const oneDay = 1000 * 60 * 60 * 24
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(session({
+	secret: process.env.PACKETS,
+	resave: false,
+	saveUninitialized: false,
+	cookie: { maxAge: oneDay },
+}))
+app.use(cookieParser())
+app.use("/main", verify)
+app.use("/main", express.static(__dirname + "/public"))
 app.use("/attachments", express.static(__dirname + "/attachments"))
+
+app.post("/", (req, res) => {
+	if (req.body.password == process.env.PASSWORD) {
+		req.session.packets = process.env.PACKETS
+		res.redirect("/main")
+	} else {
+		res.send("You are not admitted to the homework discussion group.")
+	}
+})
+
+app.get("/", (req, res) => {
+	res.sendFile(path.join(__dirname + "/verify/index.html"))
+})
+
+/// Listeners
 
 var typing = []
 
