@@ -11,10 +11,10 @@ username_field.addEventListener("submit", (e) => {
 		username_container.style.display = "none"
 		username = _username.value
 
-		socket = io(window.location.href, { 
+		socket = io(window.location.href.replace("/main", ""), { 
 			query: `username=${username}`,
 			reconnect: true,
-			transports: ["websocket"],
+			transports: ["websocket", "polling"],
 		})
 
 		listeners()
@@ -65,6 +65,13 @@ const listeners = () => {
 	socket.on("connect_error", (err) => {
 		console.log("Connection Error : " + err.message)
 	})
+	socket.on("retry", () => {
+		username_container.style.display = "flex"
+		username = null
+		_username.value = ""
+		_username.placeholder = "User already has that name!"
+		socket = null
+	})
 	socket.on("meta", (data) => {
 		if (data["connected"]) {
 			online.innerHTML = ""
@@ -79,7 +86,17 @@ const listeners = () => {
 		if (data["messages"]) {
 			data["messages"].forEach((message) => {
 				if (message.type == "MESSAGE") {
-					messages.innerHTML += `<li class="message"><b>${message.username}</b> <a class="date"><${message.date}></a><br>${message.message}</li>`
+					let prevUser = messages.lastElementChild.getElementsByTagName("b")[0]
+					if (!prevUser) {
+						messages.innerHTML += `<li class="message"><b>${message.username}</b> <a class="date"><${message.date}></a><br>${message.message}</li>`
+						messages.lastElementChild.scrollIntoView()	
+					} else if (prevUser.innerText == message.username) {
+						messages.lastElementChild.innerHTML += `<br><a class="date"><${message.date}></a><br>${message.message}`
+						messages.lastElementChild.scrollIntoView()
+					} else {
+						messages.innerHTML += `<li class="message"><b>${message.username}</b> <a class="date"><${message.date}></a><br>${message.message}</li>`
+						messages.lastElementChild.scrollIntoView()	
+					}
 				} else if (message.type == "ANNOUNCMENT") {
 					messages.innerHTML += `<li class="message"><i>${message.message}</i> <a class="date"><${message.date}></a></li>`
 				} else if(message.type == "IMAGE") {
@@ -91,8 +108,17 @@ const listeners = () => {
 	})
 
 	socket.on("message", (data) => {
-		messages.innerHTML += `<li class="message"><b>${data.username}</b> <a class="date"><${data.date}></a><br>${data.message}</li>`
-		messages.lastElementChild.scrollIntoView()	
+		let prevUser = messages.lastElementChild.querySelector(":scope > b")
+		if (!prevUser) {
+			messages.innerHTML += `<li class="message"><b>${data.username}</b> <a class="date"><${data.date}></a><br>${data.message}</li>`
+			messages.lastElementChild.scrollIntoView()	
+		} else if (prevUser.innerText == data.username) {
+			messages.lastElementChild.innerHTML += `<br><a class="date"><${data.date}></a><br>${data.message}`
+			messages.lastElementChild.scrollIntoView()
+		} else {
+			messages.innerHTML += `<li class="message"><b>${data.username}</b> <a class="date"><${data.date}></a><br>${data.message}</li>`
+			messages.lastElementChild.scrollIntoView()	
+		}
 	})
 
 	socket.on("announcement", (data) => {

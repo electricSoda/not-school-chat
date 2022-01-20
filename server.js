@@ -83,13 +83,21 @@ app.get("/", (req, res) => {
 var typing = []
 
 io.on("connection", (socket) => {
-	console.log("Client connected with id: " + socket.id + " and username of: " + socket.handshake.query.username)
 	socket.username = socket.handshake.query.username
 
 	let sockets = []
 	for (let [key, socket] of io.sockets.sockets) {
 		sockets.push(socket["username"])
 	}
+
+	let prevSockets = [...sockets]
+	if (prevSockets.length !== new Set(prevSockets).size) {
+		socket.emit("retry")
+		socket.disconnect()
+		return
+	}
+
+	console.log("Client connected with id: " + socket.id + " and username of: " + socket.username)
 
 	fs.writeFileSync(filename, JSON.stringify(content, null, 2))
 	delete require.cache[require.resolve(filename)]
